@@ -61,12 +61,13 @@ jobs:
           echo "USER_GID=${USER_GID}" >> ${GITHUB_ENV}
 
       - name: Install dependencies
-        if: inputs.platform == 'arm64'
         run: |
           set -x
           sudo apt update -y
           sudo apt install -y \
-            podman
+            podman \
+            qemu-utils
+          sudo modprobe loop || true
 
       - name: Maximize build space
         if: inputs.platform != 'arm64'
@@ -86,12 +87,13 @@ jobs:
           image: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}
           chown: ${{ env.USER_UID }}:${{ env.USER_GID }}
           types: ${{ matrix.disk-type }}
-          additional-args: --use-librepo=True
+          additional-args: --use-librepo=True --rootfs btrfs
 
       - name: Upload disk images and Checksum to Job Artifacts
         if: inputs.upload-to-s3 != true && github.event_name != 'pull_request'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
+          name: ${{ matrix.disk-type }}-output
           path: ${{ steps.build.outputs.output-directory }}
           if-no-files-found: error
           retention-days: 0
