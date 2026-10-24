@@ -15,6 +15,9 @@ cp -avf "/ctx/system_files"/. /
 # this installs a package from fedora repos
 dnf5 install -y tmux
 
+### Remove packages
+dnf5 remove -y kwrite
+
 # Use a COPR Example:
 #
 # dnf5 -y copr enable ublue-os/staging
@@ -22,6 +25,12 @@ dnf5 install -y tmux
 # Disable COPRs so they don't end up enabled on the final image:
 # dnf5 -y copr disable ublue-os/staging
 
+dnf5 -y copr enable grahamwhiteuk/libfprint-tod
+dnf5 swap -y libfprint libfprint-tod
+dnf5 install -y libfprint-tod-selinux
+dnf5 install -y libfprint-2-tod1-broadcom
+
 #### Example for enabling a System Unit File
 
 systemctl enable podman.socket
+systemctl enable plasma-setup
