@@ -14,6 +14,7 @@ cp -avf "/ctx/system_files"/. /
 
 # this installs a package from fedora repos
 dnf5 install -y tmux
+dnf5 install -y libisofs
 
 ### Remove packages
 dnf5 remove -y kwrite
@@ -33,4 +34,3 @@ dnf5 install -y libfprint-2-tod1-broadcom
 #### Example for enabling a System Unit File
 
 systemctl enable podman.socket
-systemctl enable plasma-setup
